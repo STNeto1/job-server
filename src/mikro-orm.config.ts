@@ -4,7 +4,7 @@ import { User } from './user/entities/user.entity'
 
 const config: Options = {
   entities: [User],
-  dbName: 'nest1',
+  dbName: 'jobs',
   user: 'postgres',
   password: 'postgres',
   type: 'postgresql',
