@@ -9,8 +9,6 @@ import { CreateCompanyInput } from './dto/create-company.input'
 describe('CompanyResolver', () => {
   let resolver: CompanyResolver
 
-  const companyServiceMock = createMock<CompanyService>({})
-
   const companyStub: Company = {
     id: 1,
     name: 'company',
@@ -23,6 +21,10 @@ describe('CompanyResolver', () => {
     createdAt: new Date(),
     updatedAt: new Date()
   }
+
+  const companyServiceMock = createMock<CompanyService>({
+    findAll: jest.fn().mockResolvedValue([companyStub])
+  })
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -54,6 +56,14 @@ describe('CompanyResolver', () => {
       await resolver.createCompany(createData)
 
       expect(companyServiceMock.create).toHaveBeenCalled()
+    })
+  })
+
+  describe('findAll', () => {
+    it('should find all companies', async () => {
+      const result = await resolver.findAll()
+
+      expect(result).toEqual([companyStub])
     })
   })
 })
