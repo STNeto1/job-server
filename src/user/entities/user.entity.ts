@@ -27,6 +27,14 @@ export class User {
   @HideField()
   password: string
 
+  @Property({})
+  @Field(() => String)
+  phone: string
+
+  @Property({ nullable: true })
+  @Field(() => String, { nullable: true })
+  resume?: string
+
   @Property()
   @Field(() => Date)
   createdAt: Date = new Date()

@@ -32,7 +32,8 @@ export class UserService {
     const user = this.userRepository.create({
       name: createUserInput.name,
       email: createUserInput.email,
-      password: hashedPassword
+      password: hashedPassword,
+      phone: createUserInput.password
     })
 
     await this.userRepository.persistAndFlush(user)
@@ -77,7 +78,7 @@ export class UserService {
 
     if (!user) throw exception
 
-    const validPwd = await verify(data.password, user.password)
+    const validPwd = await verify(user.password, data.password)
     if (!validPwd) throw exception
 
     return user

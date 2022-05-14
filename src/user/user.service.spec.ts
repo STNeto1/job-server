@@ -18,6 +18,7 @@ describe('UserService', () => {
     name: 'user',
     email: 'mail@mail.com',
     password: 'password',
+    phone: 'phone',
     createdAt: new Date(),
     updatedAt: new Date()
   }
@@ -51,7 +52,8 @@ describe('UserService', () => {
     const createInput: CreateUserInput = {
       name: 'name',
       email: 'mail@mail.com',
-      password: '102030'
+      password: '102030',
+      phone: 'some phone'
     }
 
     it('should throw BadRequestException if email already in use', async () => {
@@ -130,7 +132,11 @@ describe('UserService', () => {
     })
 
     it('should throw BadRequestException if password does not match', async () => {
-      mockedUserRepository.findOne.mockResolvedValue(userStub)
+      const stubWithHash: User = {
+        ...userStub,
+        password: await hash('password')
+      }
+      mockedUserRepository.findOne.mockResolvedValue(stubWithHash)
 
       await expect(
         service.findByEmailAndPassword({

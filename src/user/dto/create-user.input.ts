@@ -16,4 +16,8 @@ export class CreateUserInput {
   @MinLength(4)
   @Field(() => String)
   password: string
+
+  @IsNotEmpty()
+  @Field(() => String)
+  phone: string
 }
