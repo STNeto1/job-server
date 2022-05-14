@@ -23,7 +23,8 @@ describe('CompanyResolver', () => {
   }
 
   const companyServiceMock = createMock<CompanyService>({
-    findAll: jest.fn().mockResolvedValue([companyStub])
+    findAll: jest.fn().mockResolvedValue([companyStub]),
+    findOne: jest.fn().mockResolvedValue(companyStub)
   })
 
   beforeAll(async () => {
@@ -64,6 +65,13 @@ describe('CompanyResolver', () => {
       const result = await resolver.findAll()
 
       expect(result).toEqual([companyStub])
+    })
+  })
+  describe('findOne', () => {
+    it('should find a company', async () => {
+      const result = await resolver.findOne(1)
+
+      expect(result).toStrictEqual(companyStub)
     })
   })
 })

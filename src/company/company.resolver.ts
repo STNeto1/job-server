@@ -22,7 +22,7 @@ export class CompanyResolver {
   }
 
   @Query(() => Company, { name: 'findOneCompany' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  async findOne(@Args('id', { type: () => Int }) id: number): Promise<Company> {
     return this.companyService.findOne(id)
   }
 
