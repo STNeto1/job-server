@@ -83,4 +83,12 @@ describe('CompanyResolver', () => {
       expect(companyServiceMock.update).toHaveBeenCalled()
     })
   })
+
+  describe('removeCompany', () => {
+    it('should remove a company', async () => {
+      await resolver.removeCompany(companyStub)
+
+      expect(companyServiceMock.remove).toHaveBeenCalled()
+    })
+  })
 })

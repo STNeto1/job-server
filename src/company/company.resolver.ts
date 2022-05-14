@@ -35,8 +35,9 @@ export class CompanyResolver {
     return true
   }
 
-  @Mutation(() => Company)
-  removeCompany(company: Company) {
-    return this.companyService.remove(company)
+  @Mutation(() => Boolean)
+  async removeCompany(company: Company): Promise<boolean> {
+    await this.companyService.remove(company)
+    return true
   }
 }
