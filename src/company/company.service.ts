@@ -48,7 +48,10 @@ export class CompanyService {
   }
 
   async findOne(id: number): Promise<Company> {
-    const company = await this.companyRepository.findOne({ id })
+    const company = await this.companyRepository.findOne({
+      id,
+      deletedAt: { $eq: null }
+    })
 
     if (!company) throw new NotFoundException('Resource not found')
 

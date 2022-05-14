@@ -55,4 +55,8 @@ export class Company {
   @Property({ onUpdate: () => new Date() })
   @Field(() => Date)
   updatedAt: Date = new Date()
+
+  @Property({ nullable: true })
+  @Field(() => Date, { nullable: true })
+  deletedAt?: Date
 }
