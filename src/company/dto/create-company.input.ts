@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql'
 import { IsEmail, IsEnum, IsNotEmpty, MinLength } from 'class-validator'
-import { CompanySize, CompanyType } from '../gql/enum'
+import { CompanyType } from '../gql/enum'
 
 @InputType()
 export class CreateCompanyInput {
@@ -21,10 +21,6 @@ export class CreateCompanyInput {
   @IsEnum(CompanyType)
   @Field(() => CompanyType)
   type: CompanyType
-
-  @IsEnum(CompanySize)
-  @Field(() => CompanySize)
-  size: CompanySize
 
   @IsNotEmpty()
   @Field(() => String)

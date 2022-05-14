@@ -28,7 +28,6 @@ export class CompanyService {
       password: await hash(createCompanyInput.password),
       description: createCompanyInput.description,
       type: createCompanyInput.type,
-      size: createCompanyInput.size,
       city: createCompanyInput.city,
       state: createCompanyInput.state
     })

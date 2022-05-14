@@ -6,16 +6,6 @@ export enum CompanyType {
   LARGE
 }
 
-export enum CompanySize {
-  SMALL,
-  MEDIUM,
-  LARGE
-}
-
 registerEnumType(CompanyType, {
   name: 'CompanyType'
-})
-
-registerEnumType(CompanySize, {
-  name: 'CompanySize'
 })

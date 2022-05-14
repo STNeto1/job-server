@@ -60,15 +60,6 @@
           "nullable": false,
           "mappedType": "enum"
         },
-        "size": {
-          "name": "size",
-          "type": "smallint",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "enum"
-        },
         "description": {
           "name": "description",
           "type": "text",

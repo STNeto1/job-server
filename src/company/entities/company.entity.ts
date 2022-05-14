@@ -1,6 +1,6 @@
 import { Entity, Enum, PrimaryKey, Property, TextType } from '@mikro-orm/core'
 import { Field, HideField, ObjectType } from '@nestjs/graphql'
-import { CompanySize, CompanyType } from '../gql/enum'
+import { CompanyType } from '../gql/enum'
 
 @Entity({
   tableName: 'companies'
@@ -35,10 +35,6 @@ export class Company {
   @Enum(() => CompanyType)
   @Field(() => CompanyType)
   type: CompanyType
-
-  @Enum(() => CompanySize)
-  @Field(() => CompanySize)
-  size: CompanySize
 
   @Property({ type: TextType })
   @Field(() => String)

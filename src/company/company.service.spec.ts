@@ -4,7 +4,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { EntityRepository } from '@mikro-orm/core'
 import { Company } from './entities/company.entity'
 import { getRepositoryToken } from '@mikro-orm/nestjs'
-import { CompanySize, CompanyType } from './gql/enum'
+import { CompanyType } from './gql/enum'
 import { CreateCompanyInput } from './dto/create-company.input'
 import { BadRequestException } from '@nestjs/common'
 
@@ -19,7 +19,6 @@ describe('CompanyService', () => {
     email: 'mail@company.com',
     password: '',
     type: CompanyType.LARGE,
-    size: CompanySize.LARGE,
     city: 'city',
     state: 'state',
     description: 'description',
@@ -52,7 +51,6 @@ describe('CompanyService', () => {
       email: 'mail@mail.com',
       name: '123',
       password: '123',
-      size: CompanySize.LARGE,
       state: 'some state',
       type: CompanyType.LARGE
     }
