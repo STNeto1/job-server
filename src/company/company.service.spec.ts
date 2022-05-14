@@ -6,7 +6,7 @@ import { Company } from './entities/company.entity'
 import { getRepositoryToken } from '@mikro-orm/nestjs'
 import { CompanyType } from './gql/enum'
 import { CreateCompanyInput } from './dto/create-company.input'
-import { BadRequestException } from '@nestjs/common'
+import { BadRequestException, NotFoundException } from '@nestjs/common'
 
 describe('CompanyService', () => {
   let service: CompanyService
@@ -80,6 +80,22 @@ describe('CompanyService', () => {
       const result = await service.findAll()
 
       expect(result).toEqual([companyStub])
+    })
+  })
+
+  describe('findOne', () => {
+    it('should throw NotFoundException if no company was found', async () => {
+      companyRepositoryMock.findOne.mockResolvedValue(null)
+
+      await expect(service.findOne(1)).rejects.toThrow(NotFoundException)
+    })
+
+    it('should find and return a company', async () => {
+      companyRepositoryMock.findOne.mockResolvedValue(companyStub)
+
+      const result = await service.findOne(1)
+
+      expect(result).toStrictEqual(companyStub)
     })
   })
 })

@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { EntityRepository } from '@mikro-orm/core'
 
@@ -39,8 +43,12 @@ export class CompanyService {
     return this.companyRepository.find({})
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`
+  async findOne(id: number): Promise<Company> {
+    const company = await this.companyRepository.findOne({ id })
+
+    if (!company) throw new NotFoundException('Resource not found')
+
+    return company
   }
 
   update(id: number, updateCompanyInput: UpdateCompanyInput) {
