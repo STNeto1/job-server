@@ -72,4 +72,14 @@ describe('CompanyService', () => {
       expect(companyRepositoryMock.persistAndFlush).toHaveBeenCalled()
     })
   })
+
+  describe('findAll', () => {
+    it('should find all companies', async () => {
+      companyRepositoryMock.find.mockResolvedValue([companyStub])
+
+      const result = await service.findAll()
+
+      expect(result).toEqual([companyStub])
+    })
+  })
 })

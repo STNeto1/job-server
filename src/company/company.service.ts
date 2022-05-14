@@ -35,8 +35,8 @@ export class CompanyService {
     await this.companyRepository.persistAndFlush(company)
   }
 
-  findAll() {
-    return `This action returns all company`
+  async findAll(): Promise<Company[]> {
+    return this.companyRepository.find({})
   }
 
   findOne(id: number) {
