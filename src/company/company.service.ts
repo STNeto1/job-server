@@ -19,12 +19,7 @@ export class CompanyService {
   ) {}
 
   async create(createCompanyInput: CreateCompanyInput): Promise<void> {
-    const existingEmail = await this.companyRepository.findOne({
-      email: createCompanyInput.email
-    })
-    if (existingEmail) {
-      throw new BadRequestException('Email already in use')
-    }
+    await this.checkEmailUsage(createCompanyInput.email)
 
     const company = this.companyRepository.create({
       name: createCompanyInput.name,
@@ -39,6 +34,15 @@ export class CompanyService {
     await this.companyRepository.persistAndFlush(company)
   }
 
+  private async checkEmailUsage(email: string) {
+    const existingEmail = await this.companyRepository.findOne({
+      email
+    })
+    if (existingEmail) {
+      throw new BadRequestException('Email already in use')
+    }
+  }
+
   async findAll(): Promise<Company[]> {
     return this.companyRepository.find({})
   }
@@ -51,8 +55,23 @@ export class CompanyService {
     return company
   }
 
-  update(id: number, updateCompanyInput: UpdateCompanyInput) {
-    return `This action updates a #${id} company`
+  async update(
+    company: Company,
+    updateCompanyInput: UpdateCompanyInput
+  ): Promise<void> {
+    if (updateCompanyInput.email) {
+      await this.checkEmailUsage(updateCompanyInput.email)
+    }
+
+    for (const key of Object.keys(updateCompanyInput)) {
+      company[key] = updateCompanyInput[key]
+    }
+
+    if (updateCompanyInput.password) {
+      company.password = await hash(updateCompanyInput.password)
+    }
+
+    await this.companyRepository.persistAndFlush(company)
   }
 
   remove(id: number) {

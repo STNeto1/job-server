@@ -98,4 +98,25 @@ describe('CompanyService', () => {
       expect(result).toStrictEqual(companyStub)
     })
   })
+
+  describe('update', () => {
+    it('should BadRequestException if new email in usage', async () => {
+      companyRepositoryMock.findOne.mockResolvedValue(companyStub)
+
+      await expect(
+        service.update(companyStub, { email: 'in-use@mail.com' })
+      ).rejects.toThrow(BadRequestException)
+    })
+
+    it('should update an company', async () => {
+      companyRepositoryMock.findOne.mockResolvedValue(null)
+
+      await service.update(companyStub, {
+        name: 'new company name',
+        password: 'new-password'
+      })
+
+      expect(companyRepositoryMock.persistAndFlush).toHaveBeenCalled()
+    })
+  })
 })
