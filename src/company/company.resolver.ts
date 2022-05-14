@@ -26,12 +26,13 @@ export class CompanyResolver {
     return this.companyService.findOne(id)
   }
 
-  @Mutation(() => Company)
-  updateCompany(
+  @Mutation(() => Boolean)
+  async updateCompany(
     company: Company,
     @Args('updateCompanyInput') updateCompanyInput: UpdateCompanyInput
-  ) {
-    return this.companyService.update(company, updateCompanyInput)
+  ): Promise<boolean> {
+    await this.companyService.update(company, updateCompanyInput)
+    return true
   }
 
   @Mutation(() => Company)

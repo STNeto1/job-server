@@ -67,11 +67,20 @@ describe('CompanyResolver', () => {
       expect(result).toEqual([companyStub])
     })
   })
+
   describe('findOne', () => {
     it('should find a company', async () => {
       const result = await resolver.findOne(1)
 
       expect(result).toStrictEqual(companyStub)
+    })
+  })
+
+  describe('updateCompany', () => {
+    it('should update a company', async () => {
+      await resolver.updateCompany(companyStub, {})
+
+      expect(companyServiceMock.update).toHaveBeenCalled()
     })
   })
 })
