@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { EntityRepository } from '@mikro-orm/core'
-import { compare, hash } from 'bcryptjs'
+import { verify, hash } from 'argon2'
 
 import { CreateUserInput } from './dto/create-user.input'
 import { UpdateUserInput } from './dto/update-user.input'
@@ -28,7 +28,7 @@ export class UserService {
       throw new BadRequestException('Email already in use')
     }
 
-    const hashedPassword = await hash(createUserInput.password, 10)
+    const hashedPassword = await hash(createUserInput.password, {})
     const user = this.userRepository.create({
       name: createUserInput.name,
       email: createUserInput.email,
@@ -77,7 +77,7 @@ export class UserService {
 
     if (!user) throw exception
 
-    const validPwd = await compare(data.password, user.password)
+    const validPwd = await verify(data.password, user.password)
     if (!validPwd) throw exception
 
     return user
@@ -103,7 +103,7 @@ export class UserService {
     }
 
     if (updateUserInput.password) {
-      user.password = await hash(updateUserInput.password, 10)
+      user.password = await hash(updateUserInput.password, {})
     }
 
     await this.userRepository.persistAndFlush(user)

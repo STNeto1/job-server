@@ -6,7 +6,7 @@ import { User } from './entities/user.entity'
 import { getRepositoryToken } from '@mikro-orm/nestjs'
 import { CreateUserInput } from './dto/create-user.input'
 import { BadRequestException, NotFoundException } from '@nestjs/common'
-import { hash } from 'bcryptjs'
+import { hash } from 'argon2'
 import { UpdateUserInput } from './dto/update-user.input'
 import { MailService } from '../mail/mail.service'
 
@@ -141,7 +141,7 @@ describe('UserService', () => {
     })
 
     it('should return the user for the right credentials', async () => {
-      const hashedPassword = await hash('102030', 10)
+      const hashedPassword = await hash('102030', {})
       const localUserStub = { ...userStub, password: hashedPassword }
       mockedUserRepository.findOne.mockResolvedValue(localUserStub)
 
