@@ -77,7 +77,9 @@ export class CompanyService {
     await this.companyRepository.persistAndFlush(company)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} company`
+  async remove(company: Company): Promise<void> {
+    company.deletedAt = new Date()
+
+    await this.companyRepository.persistAndFlush(company)
   }
 }

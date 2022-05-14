@@ -119,4 +119,12 @@ describe('CompanyService', () => {
       expect(companyRepositoryMock.persistAndFlush).toHaveBeenCalled()
     })
   })
+
+  describe('remove', () => {
+    it('should soft delete the company', async () => {
+      await service.remove(companyStub)
+
+      expect(companyRepositoryMock.persistAndFlush).toHaveBeenCalled()
+    })
+  })
 })
