@@ -9,7 +9,8 @@ import { EntityRepository } from '@mikro-orm/core'
 import { CreateCompanyInput } from './dto/create-company.input'
 import { UpdateCompanyInput } from './dto/update-company.input'
 import { Company } from './entities/company.entity'
-import { hash } from 'argon2'
+import { hash, verify } from 'argon2'
+import { CompanyLoginInput } from './dto/company-login.input'
 
 @Injectable()
 export class CompanyService {
@@ -54,6 +55,21 @@ export class CompanyService {
     })
 
     if (!company) throw new NotFoundException('Resource not found')
+
+    return company
+  }
+
+  async findWithCredentials({
+    email,
+    password
+  }: CompanyLoginInput): Promise<Company> {
+    const exception = new BadRequestException('Invalid credentials')
+
+    const company = await this.companyRepository.findOne({ email })
+    if (!company) throw exception
+
+    const passwordMatches = await verify(company.password, password)
+    if (!passwordMatches) throw exception
 
     return company
   }

@@ -7,6 +7,7 @@ import { getRepositoryToken } from '@mikro-orm/nestjs'
 import { CompanyType } from './gql/enum'
 import { CreateCompanyInput } from './dto/create-company.input'
 import { BadRequestException, NotFoundException } from '@nestjs/common'
+import { hash } from 'argon2'
 
 describe('CompanyService', () => {
   let service: CompanyService
@@ -96,6 +97,48 @@ describe('CompanyService', () => {
       const result = await service.findOne(1)
 
       expect(result).toStrictEqual(companyStub)
+    })
+  })
+
+  describe('findWithCredentials', () => {
+    it('should throw BadRequestException if no email was found', async () => {
+      companyRepositoryMock.findOne.mockResolvedValue(null)
+
+      await expect(
+        service.findWithCredentials({
+          email: 'mail@mail.com',
+          password: '102030'
+        })
+      ).rejects.toThrow(BadRequestException)
+    })
+
+    it('should throw BadRequestException if password does not match', async () => {
+      companyRepositoryMock.findOne.mockResolvedValue({
+        ...companyStub,
+        password: await hash('password')
+      })
+
+      await expect(
+        service.findWithCredentials({
+          email: 'mail@mail.com',
+          password: '102030'
+        })
+      ).rejects.toThrow(BadRequestException)
+    })
+
+    it('should return the given company', async () => {
+      const stubWithHash: Company = {
+        ...companyStub,
+        password: await hash('password')
+      }
+      companyRepositoryMock.findOne.mockResolvedValue(stubWithHash)
+
+      const result = await service.findWithCredentials({
+        email: 'mail@mail.com',
+        password: 'password'
+      })
+
+      expect(result).toStrictEqual(stubWithHash)
     })
   })
 
