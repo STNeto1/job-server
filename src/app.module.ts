@@ -9,6 +9,7 @@ import { configValidationSchema } from './configuration/config'
 import { UserModule } from './user/user.module'
 import { AuthModule } from './auth/auth.module'
 import { MailModule } from './mail/mail.module'
+import { CompanyModule } from './company/company.module'
 
 @Module({
   imports: [
@@ -33,7 +34,8 @@ import { MailModule } from './mail/mail.module'
     }),
     UserModule,
     AuthModule,
-    MailModule
+    MailModule,
+    CompanyModule
   ],
   controllers: [],
   providers: []
