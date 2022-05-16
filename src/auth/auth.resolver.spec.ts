@@ -13,7 +13,8 @@ describe('AuthResolver', () => {
     email: 'mail@mail.com',
     password: 'password',
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
+    phone: ''
   }
 
   const mockedUserService = createMock<AuthService>({

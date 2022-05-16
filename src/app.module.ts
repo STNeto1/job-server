@@ -18,15 +18,7 @@ import { CompanyModule } from './company/company.module'
       validationSchema: configValidationSchema
     }),
     LoggerModule.forRoot(),
-    MikroOrmModule.forRoot({
-      autoLoadEntities: true,
-      dbName: 'nest1',
-      type: 'postgresql',
-      user: 'postgres',
-      password: 'postgres',
-      port: 5432,
-      debug: true
-    }),
+    MikroOrmModule.forRoot(),
     GraphQLModule.forRoot<MercuriusDriverConfig>({
       driver: MercuriusDriver,
       graphiql: true,

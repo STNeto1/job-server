@@ -1,4 +1,11 @@
-import { Entity, Enum, PrimaryKey, Property, TextType } from '@mikro-orm/core'
+import {
+  Entity,
+  Enum,
+  PrimaryKey,
+  Property,
+  StringType,
+  TextType
+} from '@mikro-orm/core'
 import { Field, HideField, ObjectType } from '@nestjs/graphql'
 import { CompanyType } from '../gql/enum'
 
@@ -14,21 +21,22 @@ export class Company {
   @Field(() => Number)
   id: number
 
-  @Property()
+  @Property({ type: StringType })
   @Field(() => String)
   name: string
 
   @Property({
-    unique: true
+    unique: true,
+    type: StringType
   })
   @Field(() => String)
   email: string
 
-  @Property({})
+  @Property({ type: StringType })
   @HideField()
   password: string
 
-  @Property({ nullable: true })
+  @Property({ nullable: true, type: StringType })
   @Field(() => String, { nullable: true })
   logo?: string
 
@@ -40,11 +48,11 @@ export class Company {
   @Field(() => String)
   description: string
 
-  @Property({})
+  @Property({ type: StringType })
   @Field(() => String)
   city: string
 
-  @Property({})
+  @Property({ type: StringType })
   @Field(() => String)
   state: string
 

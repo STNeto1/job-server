@@ -14,7 +14,8 @@ describe('UserResolver', () => {
     email: 'mail@mail.com',
     password: 'password',
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
+    phone: ''
   }
 
   const mockedUserService = createMock<UserService>()
@@ -39,7 +40,8 @@ describe('UserResolver', () => {
       const result = await resolver.createUser({
         name: 'name',
         email: 'mail@mail.com',
-        password: '102030'
+        password: '102030',
+        phone: ''
       })
 
       expect(result).toEqual(true)

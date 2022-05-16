@@ -7,10 +7,13 @@ import { UserModule } from '../user/user.module'
 import { JwtStrategy } from './strategy/jwt.strategy'
 import { AuthResolver } from './auth.resolver'
 import { getRsaPrivateKey } from '../utils'
+import { CompanyModule } from '../company/company.module'
+import { CompanyJwtStrategy } from './strategy/company-jwt.strategy'
 
 @Module({
   imports: [
     UserModule,
+    CompanyModule,
     PassportModule,
     JwtModule.register({
       secret: getRsaPrivateKey(),
@@ -20,6 +23,6 @@ import { getRsaPrivateKey } from '../utils'
       }
     })
   ],
-  providers: [AuthService, JwtStrategy, AuthResolver]
+  providers: [AuthService, JwtStrategy, AuthResolver, CompanyJwtStrategy]
 })
 export class AuthModule {}

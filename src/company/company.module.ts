@@ -6,6 +6,7 @@ import { Company } from './entities/company.entity'
 
 @Module({
   imports: [MikroOrmModule.forFeature([Company])],
-  providers: [CompanyResolver, CompanyService]
+  providers: [CompanyResolver, CompanyService],
+  exports: [CompanyService]
 })
 export class CompanyModule {}

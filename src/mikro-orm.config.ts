@@ -10,7 +10,8 @@ const config: Options = {
   password: 'postgres',
   type: 'postgresql',
   port: 5432,
-  debug: true
+  debug: true,
+  allowGlobalContext: true
 }
 
 export default config

@@ -15,7 +15,8 @@ describe('AuthService', () => {
     email: 'mail@mail.com',
     password: 'password',
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
+    phone: ''
   }
 
   const mockedJwtService = createMock<JwtService>({
