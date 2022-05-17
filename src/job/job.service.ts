@@ -50,6 +50,16 @@ export class JobService {
     return job
   }
 
+  async findOneBySlug(slug: string): Promise<Job> {
+    const job = await this.jobRepository.findOne({ slug, deletedAt: null })
+
+    if (!job) {
+      throw new NotFoundException('Resource was not found')
+    }
+
+    return job
+  }
+
   async update(
     company: Company,
     updateJobInput: UpdateJobInput

@@ -77,6 +77,24 @@ describe('JobService', () => {
     })
   })
 
+  describe('findOneBySlug', () => {
+    it('should throw NotFoundException if no job was found', async () => {
+      jobRepositoryMock.findOne.mockResolvedValue(null)
+
+      await expect(service.findOneBySlug('some-slug')).rejects.toThrow(
+        NotFoundException
+      )
+    })
+
+    it('should return job from given slug', async () => {
+      jobRepositoryMock.findOne.mockResolvedValue(jobStub)
+
+      const result = await service.findOneBySlug('some-slug')
+
+      expect(result).toStrictEqual(jobStub)
+    })
+  })
+
   describe('update', () => {
     const updateData: UpdateJobInput = {
       id: 1,
