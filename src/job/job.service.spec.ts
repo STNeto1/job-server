@@ -103,4 +103,22 @@ describe('JobService', () => {
       expect(jobRepositoryMock.persistAndFlush).toHaveBeenCalled()
     })
   })
+
+  describe('remove', () => {
+    it('should throw NotFoundException if no job was found', async () => {
+      jobRepositoryMock.findOne.mockResolvedValue(null)
+
+      await expect(service.remove(companyStub, 1)).rejects.toThrow(
+        NotFoundException
+      )
+    })
+
+    it('should soft delete a job post', async () => {
+      jobRepositoryMock.findOne.mockResolvedValue(jobStub)
+
+      await service.remove(companyStub, 1)
+
+      expect(jobRepositoryMock.persistAndFlush).toHaveBeenCalled()
+    })
+  })
 })

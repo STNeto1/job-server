@@ -67,7 +67,18 @@ export class JobService {
     await this.jobRepository.persistAndFlush(job)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} job`
+  async remove(company: Company, id: number): Promise<void> {
+    const job = await this.jobRepository.findOne({
+      id,
+      deletedAt: null,
+      company
+    })
+
+    if (!job) {
+      throw new NotFoundException('Resource was not found')
+    }
+
+    job.deletedAt = new Date()
+    await this.jobRepository.persistAndFlush(job)
   }
 }
