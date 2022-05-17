@@ -1,6 +1,7 @@
 import {
   Entity,
   Enum,
+  IntegerType,
   PrimaryKey,
   Property,
   StringType,
@@ -40,7 +41,7 @@ export class Company {
   @Field(() => String, { nullable: true })
   logo?: string
 
-  @Enum(() => CompanyType)
+  @Enum({ items: () => CompanyType, type: IntegerType })
   @Field(() => CompanyType)
   type: CompanyType
 
