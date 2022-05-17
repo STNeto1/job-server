@@ -2,25 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { CompanyResolver } from './company.resolver'
 import { CompanyService } from './company.service'
 import { createMock } from '@golevelup/ts-jest'
-import { Company } from './entities/company.entity'
 import { CompanyType } from './gql/enum'
 import { CreateCompanyInput } from './dto/create-company.input'
+import { companyStub } from '../../test/stubs/company.stub'
 
 describe('CompanyResolver', () => {
   let resolver: CompanyResolver
-
-  const companyStub: Company = {
-    id: 1,
-    name: 'company',
-    email: 'mail@company.com',
-    password: '',
-    type: CompanyType.LARGE,
-    city: 'city',
-    state: 'state',
-    description: 'description',
-    createdAt: new Date(),
-    updatedAt: new Date()
-  }
 
   const companyServiceMock = createMock<CompanyService>({
     findAll: jest.fn().mockResolvedValue([companyStub]),

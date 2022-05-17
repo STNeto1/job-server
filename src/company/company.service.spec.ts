@@ -8,24 +8,12 @@ import { CompanyType } from './gql/enum'
 import { CreateCompanyInput } from './dto/create-company.input'
 import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { hash } from 'argon2'
+import { companyStub } from '../../test/stubs/company.stub'
 
 describe('CompanyService', () => {
   let service: CompanyService
 
   const companyRepositoryMock = createMock<EntityRepository<Company>>()
-
-  const companyStub: Company = {
-    id: 1,
-    name: 'company',
-    email: 'mail@company.com',
-    password: '',
-    type: CompanyType.LARGE,
-    city: 'city',
-    state: 'state',
-    description: 'description',
-    createdAt: new Date(),
-    updatedAt: new Date()
-  }
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
