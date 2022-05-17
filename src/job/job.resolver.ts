@@ -22,8 +22,8 @@ export class JobResolver {
     return true
   }
 
-  @Query(() => [Job], { name: 'job' })
-  findAll() {
+  @Query(() => [Job], { name: 'findAllJobs' })
+  async findAll(): Promise<Job[]> {
     return this.jobService.findAll()
   }
 

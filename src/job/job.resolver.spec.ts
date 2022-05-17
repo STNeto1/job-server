@@ -4,11 +4,14 @@ import { JobService } from './job.service'
 import { createMock } from '@golevelup/ts-jest'
 import { JobLevel, JobRegiment } from './gql/enum'
 import { companyStub } from '../../test/stubs/company.stub'
+import { jobStub } from '../../test/stubs/job.stub'
 
 describe('JobResolver', () => {
   let resolver: JobResolver
 
-  const jobServiceMock = createMock<JobService>({})
+  const jobServiceMock = createMock<JobService>({
+    findAll: jest.fn().mockResolvedValue([jobStub])
+  })
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -38,6 +41,14 @@ describe('JobResolver', () => {
       })
 
       expect(jobServiceMock.create).toHaveBeenCalled()
+    })
+  })
+
+  describe('findAll', () => {
+    it('should find all jobs', async () => {
+      const result = await resolver.findAll()
+
+      expect(result).toEqual([jobStub])
     })
   })
 })
