@@ -2,7 +2,7 @@ import { Job } from '../../src/job/entities/job.entity'
 import { companyStub } from './company.stub'
 import { JobLevel, JobRegiment } from '../../src/job/gql/enum'
 
-export const JobStub: Job = {
+export const jobStub: Job = {
   id: 1,
   title: 'some job',
   description: 'some description',

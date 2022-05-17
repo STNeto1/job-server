@@ -30,8 +30,10 @@ export class JobService {
     await this.jobRepository.persistAndFlush(job)
   }
 
-  findAll() {
-    return `This action returns all job`
+  async findAll(): Promise<Job[]> {
+    return this.jobRepository.find({
+      deletedAt: null
+    })
   }
 
   findOne(id: number) {

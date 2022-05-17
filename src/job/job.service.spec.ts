@@ -7,6 +7,7 @@ import { getRepositoryToken } from '@mikro-orm/nestjs'
 import { CreateJobInput } from './dto/create-job.input'
 import { JobLevel, JobRegiment } from './gql/enum'
 import { companyStub } from '../../test/stubs/company.stub'
+import { jobStub } from '../../test/stubs/job.stub'
 
 describe('JobService', () => {
   let service: JobService
@@ -43,6 +44,16 @@ describe('JobService', () => {
       await service.create(companyStub, data)
 
       expect(jobRepositoryMock.persistAndFlush).toHaveBeenCalled()
+    })
+  })
+
+  describe('findAll', () => {
+    it('should find all non deleted jobs', async () => {
+      jobRepositoryMock.find.mockResolvedValue([jobStub])
+
+      const result = await service.findAll()
+
+      expect(result).toEqual([jobStub])
     })
   })
 })
