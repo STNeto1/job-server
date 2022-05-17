@@ -27,9 +27,16 @@ export class JobResolver {
     return this.jobService.findAll()
   }
 
-  @Query(() => Job, { name: 'job' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => Job, { name: 'findOneJob' })
+  async findOne(@Args('id', { type: () => Int }) id: number): Promise<Job> {
     return this.jobService.findOne(id)
+  }
+
+  @Query(() => Job, { name: 'findOneJobBySlug' })
+  async findOneBySlug(
+    @Args('slug', { type: () => String }) slug: string
+  ): Promise<Job> {
+    return this.jobService.findOneBySlug(slug)
   }
 
   @Mutation(() => Job)

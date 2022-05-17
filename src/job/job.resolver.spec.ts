@@ -10,7 +10,9 @@ describe('JobResolver', () => {
   let resolver: JobResolver
 
   const jobServiceMock = createMock<JobService>({
-    findAll: jest.fn().mockResolvedValue([jobStub])
+    findAll: jest.fn().mockResolvedValue([jobStub]),
+    findOne: jest.fn().mockResolvedValue(jobStub),
+    findOneBySlug: jest.fn().mockResolvedValue(jobStub)
   })
 
   beforeAll(async () => {
@@ -49,6 +51,22 @@ describe('JobResolver', () => {
       const result = await resolver.findAll()
 
       expect(result).toEqual([jobStub])
+    })
+  })
+
+  describe('findOne', () => {
+    it('should find a job ', async () => {
+      const result = await resolver.findOne(1)
+
+      expect(result).toStrictEqual(jobStub)
+    })
+  })
+
+  describe('findOneBySlug', () => {
+    it('should find a job for given slug ', async () => {
+      const result = await resolver.findOneBySlug('some-job')
+
+      expect(result).toStrictEqual(jobStub)
     })
   })
 })
