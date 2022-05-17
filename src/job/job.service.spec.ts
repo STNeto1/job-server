@@ -9,6 +9,7 @@ import { JobLevel, JobRegiment } from './gql/enum'
 import { companyStub } from '../../test/stubs/company.stub'
 import { jobStub } from '../../test/stubs/job.stub'
 import { NotFoundException } from '@nestjs/common'
+import { UpdateJobInput } from './dto/update-job.input'
 
 describe('JobService', () => {
   let service: JobService
@@ -71,6 +72,35 @@ describe('JobService', () => {
       const result = await service.findOne(1)
 
       expect(result).toStrictEqual(jobStub)
+    })
+  })
+
+  describe('update', () => {
+    const updateData: UpdateJobInput = {
+      id: 1,
+      description: 'some description',
+      level: JobLevel.JR,
+      regiment: JobRegiment.INTERNSHIP,
+      remote: false,
+      requisites: 'some requisites',
+      salary: 'some salary',
+      title: 'some title'
+    }
+
+    it('should throw NotFoundException if no job was found', async () => {
+      jobRepositoryMock.findOne.mockResolvedValue(null)
+
+      await expect(service.update(companyStub, updateData)).rejects.toThrow(
+        NotFoundException
+      )
+    })
+
+    it('should update a job post', async () => {
+      jobRepositoryMock.findOne.mockResolvedValue(jobStub)
+
+      await service.update(companyStub, updateData)
+
+      expect(jobRepositoryMock.persistAndFlush).toHaveBeenCalled()
     })
   })
 })

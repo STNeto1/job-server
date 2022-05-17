@@ -46,8 +46,25 @@ export class JobService {
     return job
   }
 
-  update(id: number, updateJobInput: UpdateJobInput) {
-    return `This action updates a #${id} job`
+  async update(
+    company: Company,
+    updateJobInput: UpdateJobInput
+  ): Promise<void> {
+    const job = await this.jobRepository.findOne({
+      id: updateJobInput.id,
+      deletedAt: null,
+      company
+    })
+
+    if (!job) {
+      throw new NotFoundException('Resource was not found')
+    }
+
+    for (const key of Object.keys(updateJobInput)) {
+      job[key] = updateJobInput[key]
+    }
+
+    await this.jobRepository.persistAndFlush(job)
   }
 
   remove(id: number) {
