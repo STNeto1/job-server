@@ -19,7 +19,7 @@ import { MailModule } from './mail/mail.module'
     LoggerModule.forRoot(),
     MikroOrmModule.forRoot({
       autoLoadEntities: true,
-      dbName: 'nest1',
+      dbName: 'jobs',
       type: 'postgresql',
       user: 'postgres',
       password: 'postgres',
