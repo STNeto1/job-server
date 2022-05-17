@@ -1,13 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { JobResolver } from './job.resolver'
 import { JobService } from './job.service'
+import { createMock } from '@golevelup/ts-jest'
 
 describe('JobResolver', () => {
   let resolver: JobResolver
 
-  beforeEach(async () => {
+  const jobServiceMock = createMock<JobService>()
+
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [JobResolver, JobService]
+      providers: [
+        JobResolver,
+        { provide: JobService, useValue: jobServiceMock }
+      ]
     }).compile()
 
     resolver = module.get<JobResolver>(JobResolver)
