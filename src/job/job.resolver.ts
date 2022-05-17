@@ -7,6 +7,7 @@ import { UseGuards } from '@nestjs/common'
 import { GqlAuthGuard } from '../auth/guard/gql.guard'
 import { Company } from '../company/entities/company.entity'
 import { CurrentCompany } from '../auth/decorators/current-company'
+import { PaginationArgs } from '../gql/args/pagination.args'
 
 @Resolver(() => Job)
 export class JobResolver {
@@ -23,8 +24,10 @@ export class JobResolver {
   }
 
   @Query(() => [Job], { name: 'findAllJobs' })
-  async findAll(): Promise<Job[]> {
-    return this.jobService.findAll()
+  async findAll(
+    @Args('pagination') pagination: PaginationArgs
+  ): Promise<Job[]> {
+    return this.jobService.findAll(pagination)
   }
 
   @Query(() => Job, { name: 'findOneJob' })

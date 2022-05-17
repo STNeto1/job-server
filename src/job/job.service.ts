@@ -8,6 +8,7 @@ import { EntityManager } from '@mikro-orm/postgresql'
 import { Company } from '../company/entities/company.entity'
 import slugify from 'slugify'
 import { SearchJobsInput } from './dto/search-jobs.input'
+import { PaginationArgs } from '../gql/args/pagination.args'
 
 @Injectable()
 export class JobService {
@@ -37,10 +38,16 @@ export class JobService {
     await this.jobRepository.persistAndFlush(job)
   }
 
-  async findAll(): Promise<Job[]> {
-    return this.jobRepository.find({
-      deletedAt: null
-    })
+  async findAll(pagination: PaginationArgs): Promise<Job[]> {
+    return this.jobRepository.find(
+      {
+        deletedAt: null
+      },
+      {
+        limit: pagination.take,
+        offset: (pagination.page - 1) * pagination.take
+      }
+    )
   }
 
   async findOne(id: number): Promise<Job> {
@@ -67,6 +74,8 @@ export class JobService {
     const qb = this.em
       .qb(Job, 'job')
       .select('*')
+      .limit(data.take)
+      .offset(data.take * (data.page - 1))
       .where({
         $or: [
           { title: { $ilike: `${data.term.toLowerCase()}` } },

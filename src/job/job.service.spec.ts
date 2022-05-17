@@ -22,6 +22,8 @@ describe('JobService', () => {
   const entityManagerMock = jest.fn(() => ({
     qb: jest.fn(() => ({
       select: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      offset: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
       andWhere: jest.fn().mockReturnThis(),
       getResultList: jest.fn().mockResolvedValue([jobStub])
@@ -69,7 +71,7 @@ describe('JobService', () => {
     it('should find all non deleted jobs', async () => {
       jobRepositoryMock.find.mockResolvedValue([jobStub])
 
-      const result = await service.findAll()
+      const result = await service.findAll({ page: 1, take: 25 })
 
       expect(result).toEqual([jobStub])
     })
@@ -115,7 +117,9 @@ describe('JobService', () => {
         term: 'some term',
         level: JobLevel.JR,
         regiment: JobRegiment.CLT,
-        remote: true
+        remote: true,
+        page: 1,
+        take: 25
       })
 
       expect(result).toEqual([jobStub])

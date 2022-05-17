@@ -1,8 +1,10 @@
-import { Field } from '@nestjs/graphql'
+import { Field, InputType } from '@nestjs/graphql'
 import { IsBoolean, IsEnum, IsNotEmpty, IsOptional } from 'class-validator'
+import { PaginationArgs } from '../../gql/args/pagination.args'
 import { JobLevel, JobRegiment } from '../gql/enum'
 
-export class SearchJobsInput {
+@InputType()
+export class SearchJobsInput extends PaginationArgs {
   @IsNotEmpty()
   @Field(() => String)
   term: string
