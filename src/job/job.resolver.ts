@@ -3,14 +3,23 @@ import { JobService } from './job.service'
 import { Job } from './entities/job.entity'
 import { CreateJobInput } from './dto/create-job.input'
 import { UpdateJobInput } from './dto/update-job.input'
+import { UseGuards } from '@nestjs/common'
+import { GqlAuthGuard } from '../auth/guard/gql.guard'
+import { Company } from '../company/entities/company.entity'
+import { CurrentCompany } from '../auth/decorators/current-company'
 
 @Resolver(() => Job)
 export class JobResolver {
   constructor(private readonly jobService: JobService) {}
 
-  @Mutation(() => Job)
-  createJob(@Args('createJobInput') createJobInput: CreateJobInput) {
-    return this.jobService.create(createJobInput)
+  @Mutation(() => Boolean)
+  @UseGuards(GqlAuthGuard)
+  async createJob(
+    @CurrentCompany() company: Company,
+    @Args('createJobInput') createJobInput: CreateJobInput
+  ): Promise<boolean> {
+    await this.jobService.create(company, createJobInput)
+    return true
   }
 
   @Query(() => [Job], { name: 'job' })
