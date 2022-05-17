@@ -1,7 +1,9 @@
 import {
+  Collection,
   Entity,
   Enum,
   IntegerType,
+  OneToMany,
   PrimaryKey,
   Property,
   StringType,
@@ -9,6 +11,7 @@ import {
 } from '@mikro-orm/core'
 import { Field, HideField, ObjectType } from '@nestjs/graphql'
 import { CompanyType } from '../gql/enum'
+import { Job } from '../../job/entities/job.entity'
 
 @Entity({
   tableName: 'companies'
@@ -56,6 +59,10 @@ export class Company {
   @Property({ type: StringType })
   @Field(() => String)
   state: string
+
+  @OneToMany(() => Job, (model) => model.company)
+  @Field(() => [Job])
+  jobs = new Collection<Job>(this)
 
   @Property()
   @Field(() => Date)
