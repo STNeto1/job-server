@@ -9,7 +9,6 @@ import { configValidationSchema } from './configuration/config'
 import { UserModule } from './user/user.module'
 import { AuthModule } from './auth/auth.module'
 import { MailModule } from './mail/mail.module'
-import { CompanyModule } from './company/company.module'
 
 @Module({
   imports: [
@@ -18,7 +17,15 @@ import { CompanyModule } from './company/company.module'
       validationSchema: configValidationSchema
     }),
     LoggerModule.forRoot(),
-    MikroOrmModule.forRoot(),
+    MikroOrmModule.forRoot({
+      autoLoadEntities: true,
+      dbName: 'jobs',
+      type: 'postgresql',
+      user: 'postgres',
+      password: 'postgres',
+      port: 5432,
+      debug: true
+    }),
     GraphQLModule.forRoot<MercuriusDriverConfig>({
       driver: MercuriusDriver,
       graphiql: true,
@@ -26,8 +33,7 @@ import { CompanyModule } from './company/company.module'
     }),
     UserModule,
     AuthModule,
-    MailModule,
-    CompanyModule
+    MailModule
   ],
   controllers: [],
   providers: []
