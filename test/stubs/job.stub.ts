@@ -5,6 +5,7 @@ import { JobLevel, JobRegiment } from '../../src/job/gql/enum'
 export const jobStub: Job = {
   id: 1,
   title: 'some job',
+  slug: '1-some-job',
   description: 'some description',
   requisites: 'some requisites',
   salary: 'some salary',

@@ -33,6 +33,10 @@ export class Job {
   @Field(() => String)
   title: string
 
+  @Property({ type: StringType })
+  @Field(() => String)
+  slug: string
+
   @Enum({ items: () => JobRegiment, type: IntegerType })
   @Field(() => JobRegiment)
   regiment: JobRegiment

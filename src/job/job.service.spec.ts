@@ -14,7 +14,9 @@ import { UpdateJobInput } from './dto/update-job.input'
 describe('JobService', () => {
   let service: JobService
 
-  const jobRepositoryMock = createMock<EntityRepository<Job>>()
+  const jobRepositoryMock = createMock<EntityRepository<Job>>({
+    count: jest.fn().mockResolvedValue(0)
+  })
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({

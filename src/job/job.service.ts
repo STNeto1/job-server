@@ -5,6 +5,7 @@ import { InjectRepository } from '@mikro-orm/nestjs'
 import { Job } from './entities/job.entity'
 import { EntityRepository } from '@mikro-orm/core'
 import { Company } from '../company/entities/company.entity'
+import slugify from 'slugify'
 
 @Injectable()
 export class JobService {
@@ -16,9 +17,12 @@ export class JobService {
     company: Company,
     createJobInput: CreateJobInput
   ): Promise<void> {
+    const count = await this.jobRepository.count()
+
     const job = this.jobRepository.create({
       company,
       title: createJobInput.title,
+      slug: slugify(`${count + 1} ${createJobInput.title}`, { lower: true }),
       regiment: createJobInput.regiment,
       level: createJobInput.level,
       remote: createJobInput.remote,
@@ -62,6 +66,10 @@ export class JobService {
 
     for (const key of Object.keys(updateJobInput)) {
       job[key] = updateJobInput[key]
+    }
+
+    if (job.title !== updateJobInput.title) {
+      job.slug = slugify(`${job.id} ${updateJobInput.title}`, { lower: true })
     }
 
     await this.jobRepository.persistAndFlush(job)
