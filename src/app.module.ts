@@ -10,6 +10,7 @@ import { UserModule } from './user/user.module'
 import { AuthModule } from './auth/auth.module'
 import { MailModule } from './mail/mail.module'
 import { CompanyModule } from './company/company.module'
+import { JobModule } from './job/job.module'
 
 @Module({
   imports: [
@@ -35,7 +36,8 @@ import { CompanyModule } from './company/company.module'
     UserModule,
     AuthModule,
     MailModule,
-    CompanyModule
+    CompanyModule,
+    JobModule
   ],
   controllers: [],
   providers: []
