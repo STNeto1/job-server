@@ -69,4 +69,29 @@ describe('JobResolver', () => {
       expect(result).toStrictEqual(jobStub)
     })
   })
+
+  describe('updateJob', () => {
+    it('should update a job', async () => {
+      await resolver.updateJob(companyStub, {
+        id: 1,
+        description: 'some description',
+        level: JobLevel.JR,
+        regiment: JobRegiment.INTERNSHIP,
+        remote: false,
+        requisites: 'some requisites',
+        salary: 'some salary',
+        title: 'some title'
+      })
+
+      expect(jobServiceMock.update).toHaveBeenCalled()
+    })
+  })
+
+  describe('removeJob', () => {
+    it('should remove a job', async () => {
+      await resolver.removeJob(companyStub, 1)
+
+      expect(jobServiceMock.remove).toHaveBeenCalled()
+    })
+  })
 })

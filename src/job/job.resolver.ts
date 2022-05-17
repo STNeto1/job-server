@@ -39,13 +39,23 @@ export class JobResolver {
     return this.jobService.findOneBySlug(slug)
   }
 
-  @Mutation(() => Job)
-  updateJob(@Args('updateJobInput') updateJobInput: UpdateJobInput) {
-    return this.jobService.update(updateJobInput.id, updateJobInput)
+  @Mutation(() => Boolean)
+  @UseGuards(GqlAuthGuard)
+  async updateJob(
+    @CurrentCompany() company: Company,
+    @Args('updateJobInput') updateJobInput: UpdateJobInput
+  ): Promise<boolean> {
+    await this.jobService.update(company, updateJobInput)
+    return true
   }
 
-  @Mutation(() => Job)
-  removeJob(@Args('id', { type: () => Int }) id: number) {
-    return this.jobService.remove(id)
+  @Mutation(() => Boolean)
+  @UseGuards(GqlAuthGuard)
+  async removeJob(
+    @CurrentCompany() company: Company,
+    @Args('id', { type: () => Int }) id: number
+  ): Promise<boolean> {
+    await this.jobService.remove(company, id)
+    return true
   }
 }
