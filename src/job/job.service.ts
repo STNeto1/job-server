@@ -4,13 +4,16 @@ import { UpdateJobInput } from './dto/update-job.input'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Job } from './entities/job.entity'
 import { EntityRepository } from '@mikro-orm/core'
+import { EntityManager } from '@mikro-orm/postgresql'
 import { Company } from '../company/entities/company.entity'
 import slugify from 'slugify'
+import { SearchJobsInput } from './dto/search-jobs.input'
 
 @Injectable()
 export class JobService {
   constructor(
-    @InjectRepository(Job) private jobRepository: EntityRepository<Job>
+    @InjectRepository(Job) private jobRepository: EntityRepository<Job>,
+    private readonly em: EntityManager
   ) {}
 
   async create(
@@ -58,6 +61,38 @@ export class JobService {
     }
 
     return job
+  }
+
+  async searchJobs(data: SearchJobsInput): Promise<Job[]> {
+    const qb = this.em
+      .qb(Job, 'job')
+      .select('*')
+      .where({
+        $or: [
+          { title: { $ilike: `${data.term.toLowerCase()}` } },
+          {
+            description: { $ilike: `${data.term.toLowerCase()}` }
+          },
+          {
+            requisites: { $ilike: `${data.term.toLowerCase()}` }
+          }
+        ]
+      })
+      .andWhere({ deletedAt: null })
+
+    if (data.level) {
+      qb.andWhere({ level: data.level })
+    }
+
+    if (data.remote) {
+      qb.andWhere({ remote: data.remote })
+    }
+
+    if (data.level) {
+      qb.andWhere({ level: data.level })
+    }
+
+    return qb.getResultList()
   }
 
   async update(

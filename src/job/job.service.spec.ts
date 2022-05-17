@@ -10,6 +10,7 @@ import { companyStub } from '../../test/stubs/company.stub'
 import { jobStub } from '../../test/stubs/job.stub'
 import { NotFoundException } from '@nestjs/common'
 import { UpdateJobInput } from './dto/update-job.input'
+import { EntityManager } from '@mikro-orm/postgresql'
 
 describe('JobService', () => {
   let service: JobService
@@ -18,11 +19,24 @@ describe('JobService', () => {
     count: jest.fn().mockResolvedValue(0)
   })
 
+  const entityManagerMock = jest.fn(() => ({
+    qb: jest.fn(() => ({
+      select: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      getResultList: jest.fn().mockResolvedValue([jobStub])
+    }))
+  }))
+
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         JobService,
-        { provide: getRepositoryToken(Job), useValue: jobRepositoryMock }
+        { provide: getRepositoryToken(Job), useValue: jobRepositoryMock },
+        {
+          provide: EntityManager,
+          useFactory: entityManagerMock
+        }
       ]
     }).compile()
 
@@ -92,6 +106,19 @@ describe('JobService', () => {
       const result = await service.findOneBySlug('some-slug')
 
       expect(result).toStrictEqual(jobStub)
+    })
+  })
+
+  describe('search', () => {
+    it('should find for jobs', async () => {
+      const result = await service.searchJobs({
+        term: 'some term',
+        level: JobLevel.JR,
+        regiment: JobRegiment.CLT,
+        remote: true
+      })
+
+      expect(result).toEqual([jobStub])
     })
   })
 
