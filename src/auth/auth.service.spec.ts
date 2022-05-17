@@ -4,26 +4,22 @@ import { createMock } from '@golevelup/ts-jest'
 
 import { AuthService } from './auth.service'
 import { UserService } from '../user/user.service'
-import { User } from '../user/entities/user.entity'
+import { CompanyService } from '../company/company.service'
+import { userStub } from '../../test/stubs/user.stub'
+import { companyStub } from '../../test/stubs/company.stub'
 
 describe('AuthService', () => {
   let service: AuthService
-
-  const userStub: User = {
-    id: 1,
-    name: 'user',
-    email: 'mail@mail.com',
-    password: 'password',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    phone: ''
-  }
 
   const mockedJwtService = createMock<JwtService>({
     sign: jest.fn().mockReturnValue('jwt')
   })
   const mockedUserService = createMock<UserService>({
     findByEmailAndPassword: jest.fn().mockReturnValue(userStub)
+  })
+
+  const mockedCompanyService = createMock<CompanyService>({
+    findWithCredentials: jest.fn().mockResolvedValue(companyStub)
   })
 
   beforeAll(async () => {
@@ -37,6 +33,10 @@ describe('AuthService', () => {
         {
           provide: UserService,
           useValue: mockedUserService
+        },
+        {
+          provide: CompanyService,
+          useValue: mockedCompanyService
         }
       ]
     }).compile()
@@ -52,6 +52,17 @@ describe('AuthService', () => {
     it('should return a access token', async () => {
       const response = await service.validateUser({
         email: 'mail@mail.com',
+        password: '102030'
+      })
+
+      expect(response.access_token).toEqual('jwt')
+    })
+  })
+
+  describe('validateCompany', () => {
+    it('should return a access token', async () => {
+      const response = await service.validateCompany({
+        email: 'company@mail.com',
         password: '102030'
       })
 
