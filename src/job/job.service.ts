@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { CreateJobInput } from './dto/create-job.input'
 import { UpdateJobInput } from './dto/update-job.input'
 import { InjectRepository } from '@mikro-orm/nestjs'
@@ -36,8 +36,14 @@ export class JobService {
     })
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} job`
+  async findOne(id: number): Promise<Job> {
+    const job = await this.jobRepository.findOne({ id, deletedAt: null })
+
+    if (!job) {
+      throw new NotFoundException('Resource was not found')
+    }
+
+    return job
   }
 
   update(id: number, updateJobInput: UpdateJobInput) {

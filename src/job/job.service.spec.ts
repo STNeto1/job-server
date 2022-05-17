@@ -8,6 +8,7 @@ import { CreateJobInput } from './dto/create-job.input'
 import { JobLevel, JobRegiment } from './gql/enum'
 import { companyStub } from '../../test/stubs/company.stub'
 import { jobStub } from '../../test/stubs/job.stub'
+import { NotFoundException } from '@nestjs/common'
 
 describe('JobService', () => {
   let service: JobService
@@ -54,6 +55,22 @@ describe('JobService', () => {
       const result = await service.findAll()
 
       expect(result).toEqual([jobStub])
+    })
+  })
+
+  describe('findOne', () => {
+    it('should throw NotFoundException if no job was found', async () => {
+      jobRepositoryMock.findOne.mockResolvedValue(null)
+
+      await expect(service.findOne(1)).rejects.toThrow(NotFoundException)
+    })
+
+    it('should return job from given id', async () => {
+      jobRepositoryMock.findOne.mockResolvedValue(jobStub)
+
+      const result = await service.findOne(1)
+
+      expect(result).toStrictEqual(jobStub)
     })
   })
 })
