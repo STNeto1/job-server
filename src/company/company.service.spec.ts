@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { CompanyService } from './company.service'
 import { createMock } from '@golevelup/ts-jest'
-import { EntityRepository } from '@mikro-orm/core'
+import { EntityRepository, Loaded } from '@mikro-orm/core'
 import { Company } from './entities/company.entity'
 import { getRepositoryToken } from '@mikro-orm/nestjs'
 import { CompanyType } from './gql/enum'
@@ -115,7 +115,7 @@ describe('CompanyService', () => {
     })
 
     it('should return the given company', async () => {
-      const stubWithHash: Company = {
+      const stubWithHash: Loaded<Company, string> = {
         ...companyStub,
         password: await hash('password')
       }

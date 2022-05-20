@@ -1,9 +1,8 @@
+import { Loaded } from '@mikro-orm/core'
 import { Company } from '../../src/company/entities/company.entity'
 import { CompanyType } from '../../src/company/gql/enum'
-import { Job } from '../../src/job/entities/job.entity'
-import { Collection } from '@mikro-orm/core'
 
-export const companyStub: Company = {
+export const companyStub: Loaded<Company, string> = {
   id: 1,
   name: 'some company',
   email: 'company@company.com',
@@ -13,7 +12,7 @@ export const companyStub: Company = {
   city: 'CG',
   state: 'PB',
   type: CompanyType.STARTUP,
-  jobs: new Collection<Job, unknown>(this, []),
+  jobs: undefined,
   createdAt: new Date(),
   updatedAt: new Date()
 }

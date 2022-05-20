@@ -48,7 +48,7 @@ describe('JobResolver', () => {
 
   describe('findAll', () => {
     it('should find all jobs', async () => {
-      const result = await resolver.findAll()
+      const result = await resolver.findAll({ page: 1, take: 10 })
 
       expect(result).toEqual([jobStub])
     })
