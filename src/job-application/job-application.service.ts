@@ -38,8 +38,8 @@ export class JobApplicationService {
     await this.applicationRepository.persistAndFlush(newApplication)
   }
 
-  findAll() {
-    return `This action returns all jobApplication`
+  async findAll(): Promise<JobApplication[]> {
+    return this.applicationRepository.find({})
   }
 
   findOne(id: number) {

@@ -58,4 +58,14 @@ describe('JobApplicationService', () => {
       expect(applicationRepositoryMock.persistAndFlush).toHaveBeenCalled()
     })
   })
+
+  describe('findAll', () => {
+    it('should find all job applications', async () => {
+      applicationRepositoryMock.find.mockResolvedValue([jobApplicationStub])
+
+      const result = await service.findAll()
+
+      expect(result).toEqual([jobApplicationStub])
+    })
+  })
 })
