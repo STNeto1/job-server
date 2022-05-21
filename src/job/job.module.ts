@@ -6,6 +6,7 @@ import { Job } from './entities/job.entity'
 
 @Module({
   imports: [MikroOrmModule.forFeature([Job])],
-  providers: [JobResolver, JobService]
+  providers: [JobResolver, JobService],
+  exports: [JobService]
 })
 export class JobModule {}
