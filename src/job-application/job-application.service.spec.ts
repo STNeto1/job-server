@@ -68,4 +68,14 @@ describe('JobApplicationService', () => {
       expect(result).toEqual([jobApplicationStub])
     })
   })
+
+  describe('findAllUserApplications', () => {
+    it('should find all user job applications', async () => {
+      applicationRepositoryMock.find.mockResolvedValue([jobApplicationStub])
+
+      const result = await service.findAllUserApplications(userStub)
+
+      expect(result).toEqual([jobApplicationStub])
+    })
+  })
 })

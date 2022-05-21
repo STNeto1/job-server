@@ -42,6 +42,12 @@ export class JobApplicationService {
     return this.applicationRepository.find({})
   }
 
+  async findAllUserApplications(user: User): Promise<JobApplication[]> {
+    return this.applicationRepository.find({
+      user
+    })
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} jobApplication`
   }
