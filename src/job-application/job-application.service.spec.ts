@@ -89,4 +89,22 @@ describe('JobApplicationService', () => {
       expect(result).toEqual([jobApplicationStub])
     })
   })
+
+  describe('findUserApplication', () => {
+    it('should throw BadRequestException if no job application is found', async () => {
+      applicationRepositoryMock.findOne.mockResolvedValue(null)
+
+      await expect(service.findUserApplication(userStub, 1)).rejects.toThrow(
+        BadRequestException
+      )
+    })
+
+    it('should return the user application', async () => {
+      applicationRepositoryMock.findOne.mockResolvedValue(jobApplicationStub)
+
+      const result = await service.findUserApplication(userStub, 1)
+
+      expect(result).toStrictEqual(jobApplicationStub)
+    })
+  })
 })

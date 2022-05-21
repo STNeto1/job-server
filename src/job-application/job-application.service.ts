@@ -58,8 +58,17 @@ export class JobApplicationService {
     })
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} jobApplication`
+  async findUserApplication(user: User, id: number): Promise<JobApplication> {
+    const application = await this.applicationRepository.findOne({
+      user,
+      id
+    })
+
+    if (!application) {
+      throw new BadRequestException('Resource was not found')
+    }
+
+    return application
   }
 
   update(id: number, updateJobApplicationInput: UpdateJobApplicationInput) {
