@@ -1,5 +1,12 @@
 import { Field, HideField, ObjectType } from '@nestjs/graphql'
-import { Entity, PrimaryKey, Property } from '@mikro-orm/core'
+import {
+  Collection,
+  Entity,
+  OneToMany,
+  PrimaryKey,
+  Property
+} from '@mikro-orm/core'
+import { JobApplication } from '../../job-application/entities/job-application.entity'
 
 @ObjectType()
 @Entity({
@@ -34,6 +41,10 @@ export class User {
   @Property({ nullable: true })
   @Field(() => String, { nullable: true })
   resume?: string
+
+  @OneToMany(() => JobApplication, (model) => model.user)
+  @Field(() => [JobApplication])
+  applications = new Collection<JobApplication>(this)
 
   @Property()
   @Field(() => Date)

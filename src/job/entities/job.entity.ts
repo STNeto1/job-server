@@ -1,10 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql'
 import {
   BooleanType,
+  Collection,
   Entity,
   Enum,
   IntegerType,
   ManyToOne,
+  OneToMany,
   PrimaryKey,
   Property,
   StringType,
@@ -12,6 +14,7 @@ import {
 } from '@mikro-orm/core'
 import { JobLevel, JobRegiment } from '../gql/enum'
 import { Company } from '../../company/entities/company.entity'
+import { JobApplication } from '../../job-application/entities/job-application.entity'
 
 @ObjectType()
 @Entity({
@@ -64,6 +67,10 @@ export class Job {
   @Property()
   @Field(() => Date)
   createdAt: Date = new Date()
+
+  @OneToMany(() => JobApplication, (model) => model.job)
+  @Field(() => [JobApplication])
+  applications = new Collection<JobApplication>(this)
 
   @Property({ onUpdate: () => new Date() })
   @Field(() => Date)
