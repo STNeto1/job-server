@@ -107,4 +107,22 @@ describe('JobApplicationService', () => {
       expect(result).toStrictEqual(jobApplicationStub)
     })
   })
+
+  describe('findCompanyApplication', () => {
+    it('should throw BadRequestException if no job application is found', async () => {
+      applicationRepositoryMock.findOne.mockResolvedValue(null)
+
+      await expect(
+        service.findCompanyApplication(companyStub, 1)
+      ).rejects.toThrow(BadRequestException)
+    })
+
+    it('should return the company related application', async () => {
+      applicationRepositoryMock.findOne.mockResolvedValue(jobApplicationStub)
+
+      const result = await service.findCompanyApplication(companyStub, 1)
+
+      expect(result).toStrictEqual(jobApplicationStub)
+    })
+  })
 })
