@@ -10,6 +10,7 @@ import { userStub } from '../../test/stubs/user.stub'
 import { JobService } from '../job/job.service'
 import { JobApplication } from './entities/job-application.entity'
 import { JobApplicationService } from './job-application.service'
+import { ApplicationStatus } from './gql/enum'
 
 describe('JobApplicationService', () => {
   let service: JobApplicationService
@@ -123,6 +124,35 @@ describe('JobApplicationService', () => {
       const result = await service.findCompanyApplication(companyStub, 1)
 
       expect(result).toStrictEqual(jobApplicationStub)
+    })
+  })
+
+  describe('update', () => {
+    describe('markApplicationAsProcessing', () => {
+      const processingApplicationStub: JobApplication = {
+        ...jobApplicationStub,
+        status: ApplicationStatus.PROCESSING
+      }
+
+      it('should throw BadRequestException if application is not open', async () => {
+        applicationRepositoryMock.findOne.mockResolvedValue(
+          processingApplicationStub
+        )
+
+        await expect(
+          service.markApplicationAsProcessing(companyStub, 1)
+        ).rejects.toThrow(BadRequestException)
+      })
+
+      it('should mark application as processing', async () => {
+        applicationRepositoryMock.findOne.mockResolvedValue(jobApplicationStub)
+
+        await service.markApplicationAsProcessing(companyStub, 1)
+
+        expect(applicationRepositoryMock.persistAndFlush).toHaveBeenCalledWith(
+          processingApplicationStub
+        )
+      })
     })
   })
 })

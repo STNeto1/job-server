@@ -7,6 +7,7 @@ import { User } from '../user/entities/user.entity'
 import { CreateJobApplicationInput } from './dto/create-job-application.input'
 import { UpdateJobApplicationInput } from './dto/update-job-application.input'
 import { JobApplication } from './entities/job-application.entity'
+import { ApplicationStatus } from './gql/enum'
 
 @Injectable()
 export class JobApplicationService {
@@ -88,6 +89,22 @@ export class JobApplicationService {
     }
 
     return application
+  }
+
+  async markApplicationAsProcessing(
+    company: Company,
+    id: number
+  ): Promise<void> {
+    const application = await this.findCompanyApplication(company, id)
+
+    if (application.status !== ApplicationStatus.OPEN) {
+      throw new BadRequestException('Only open application can be processed')
+    }
+
+    application.status = ApplicationStatus.PROCESSING
+    // TODO send email to user
+
+    await this.applicationRepository.persistAndFlush(application)
   }
 
   update(id: number, updateJobApplicationInput: UpdateJobApplicationInput) {
