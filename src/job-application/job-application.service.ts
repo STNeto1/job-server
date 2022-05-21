@@ -1,6 +1,7 @@
 import { EntityRepository } from '@mikro-orm/core'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { BadRequestException, Injectable } from '@nestjs/common'
+import { Company } from '../company/entities/company.entity'
 import { JobService } from '../job/job.service'
 import { User } from '../user/entities/user.entity'
 import { CreateJobApplicationInput } from './dto/create-job-application.input'
@@ -45,6 +46,15 @@ export class JobApplicationService {
   async findAllUserApplications(user: User): Promise<JobApplication[]> {
     return this.applicationRepository.find({
       user
+    })
+  }
+  async findAllCompanyApplications(
+    company: Company
+  ): Promise<JobApplication[]> {
+    return this.applicationRepository.find({
+      job: {
+        company
+      }
     })
   }
 

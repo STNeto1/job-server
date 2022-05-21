@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@mikro-orm/nestjs'
 import { EntityRepository } from '@mikro-orm/postgresql'
 import { BadRequestException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import { companyStub } from '../../test/stubs/company.stub'
 import { jobApplicationStub } from '../../test/stubs/job-application.stub'
 import { jobStub } from '../../test/stubs/job.stub'
 import { userStub } from '../../test/stubs/user.stub'
@@ -74,6 +75,16 @@ describe('JobApplicationService', () => {
       applicationRepositoryMock.find.mockResolvedValue([jobApplicationStub])
 
       const result = await service.findAllUserApplications(userStub)
+
+      expect(result).toEqual([jobApplicationStub])
+    })
+  })
+
+  describe('findAllCompanyApplications', () => {
+    it('should find all company related job applications', async () => {
+      applicationRepositoryMock.find.mockResolvedValue([jobApplicationStub])
+
+      const result = await service.findAllCompanyApplications(companyStub)
 
       expect(result).toEqual([jobApplicationStub])
     })
