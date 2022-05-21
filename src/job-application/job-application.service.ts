@@ -48,6 +48,7 @@ export class JobApplicationService {
       user
     })
   }
+
   async findAllCompanyApplications(
     company: Company
   ): Promise<JobApplication[]> {
