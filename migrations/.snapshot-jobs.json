@@ -497,6 +497,84 @@
           "updateRule": "cascade"
         }
       }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "application_id": {
+          "name": "application_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "message": {
+          "name": "message",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "from_user": {
+          "name": "from_user",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "boolean"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "job_application_messages",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "job_application_messages_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "job_application_messages_application_id_foreign": {
+          "constraintName": "job_application_messages_application_id_foreign",
+          "columnNames": [
+            "application_id"
+          ],
+          "localTableName": "public.job_application_messages",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.job_applications",
+          "updateRule": "cascade"
+        }
+      }
     }
   ]
 }
