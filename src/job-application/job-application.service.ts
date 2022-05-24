@@ -107,6 +107,21 @@ export class JobApplicationService {
     await this.applicationRepository.persistAndFlush(application)
   }
 
+  async markApplicationAsFinished(company: Company, id: number): Promise<void> {
+    const application = await this.findCompanyApplication(company, id)
+
+    if (application.status !== ApplicationStatus.PROCESSING) {
+      throw new BadRequestException(
+        'Only processing application can be finished'
+      )
+    }
+
+    application.status = ApplicationStatus.FINISHED
+    // TODO send email to user
+
+    await this.applicationRepository.persistAndFlush(application)
+  }
+
   update(id: number, updateJobApplicationInput: UpdateJobApplicationInput) {
     return `This action updates a #${id} jobApplication`
   }

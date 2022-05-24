@@ -154,5 +154,30 @@ describe('JobApplicationService', () => {
         )
       })
     })
+
+    describe('markApplicationAsFinished', () => {
+      const openApplicationStub: JobApplication = {
+        ...jobApplicationStub,
+        status: ApplicationStatus.OPEN
+      }
+
+      it('should throw BadRequestException if application is not processing', async () => {
+        applicationRepositoryMock.findOne.mockResolvedValue(openApplicationStub)
+
+        await expect(
+          service.markApplicationAsFinished(companyStub, 1)
+        ).rejects.toThrow(BadRequestException)
+      })
+
+      it('should mark application as finished', async () => {
+        applicationRepositoryMock.findOne.mockResolvedValue(jobApplicationStub)
+
+        await service.markApplicationAsFinished(companyStub, 1)
+
+        expect(applicationRepositoryMock.persistAndFlush).toHaveBeenCalledWith(
+          openApplicationStub
+        )
+      })
+    })
   })
 })
