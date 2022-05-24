@@ -179,5 +179,32 @@ describe('JobApplicationService', () => {
         )
       })
     })
+
+    describe('cancelJobApplication', () => {
+      const processingJobApplication: JobApplication = {
+        ...jobApplicationStub,
+        status: ApplicationStatus.PROCESSING
+      }
+
+      it('should throw BadRequestException if application is not cancelled', async () => {
+        applicationRepositoryMock.findOne.mockResolvedValue(
+          processingJobApplication
+        )
+
+        await expect(service.cancelJobApplication(userStub, 1)).rejects.toThrow(
+          BadRequestException
+        )
+      })
+
+      it('should cancel application', async () => {
+        applicationRepositoryMock.findOne.mockResolvedValue(jobApplicationStub)
+
+        await service.cancelJobApplication(userStub, 1)
+
+        expect(applicationRepositoryMock.persistAndFlush).toHaveBeenCalledWith(
+          jobApplicationStub
+        )
+      })
+    })
   })
 })

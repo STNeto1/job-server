@@ -122,6 +122,19 @@ export class JobApplicationService {
     await this.applicationRepository.persistAndFlush(application)
   }
 
+  async cancelJobApplication(user: User, id: number): Promise<void> {
+    const application = await this.findUserApplication(user, id)
+
+    if (application.status !== ApplicationStatus.OPEN) {
+      throw new BadRequestException('Only open application can be cancelled')
+    }
+
+    application.status = ApplicationStatus.CANCELLED
+    // TODO send email to company
+
+    await this.applicationRepository.persistAndFlush(application)
+  }
+
   update(id: number, updateJobApplicationInput: UpdateJobApplicationInput) {
     return `This action updates a #${id} jobApplication`
   }
