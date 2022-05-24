@@ -2,7 +2,6 @@ import {
   BooleanType,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryKey,
   Property,
   TextType
