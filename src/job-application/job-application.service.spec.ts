@@ -11,12 +11,16 @@ import { JobService } from '../job/job.service'
 import { JobApplication } from './entities/job-application.entity'
 import { JobApplicationService } from './job-application.service'
 import { ApplicationStatus } from './gql/enum'
+import { JobApplicationMessage } from './entities/job-application-message.entity'
 
 describe('JobApplicationService', () => {
   let service: JobApplicationService
 
   const applicationRepositoryMock =
     createMock<EntityRepository<JobApplication>>()
+
+  const messageRepositoryMock =
+    createMock<EntityRepository<JobApplicationMessage>>()
   const jobServiceMock = createMock<JobService>({
     findOne: jest.fn().mockResolvedValue(jobStub)
   })
@@ -28,6 +32,10 @@ describe('JobApplicationService', () => {
         {
           provide: getRepositoryToken(JobApplication),
           useValue: applicationRepositoryMock
+        },
+        {
+          provide: getRepositoryToken(JobApplicationMessage),
+          useValue: messageRepositoryMock
         },
         {
           provide: JobService,
@@ -257,6 +265,36 @@ describe('JobApplicationService', () => {
         expect(applicationRepositoryMock.persistAndFlush).toHaveBeenCalledWith(
           jobApplicationStub
         )
+      })
+    })
+
+    describe('sendMessageFromUser', () => {
+      it('should store message from user', async () => {
+        applicationRepositoryMock.findOne.mockResolvedValueOnce(
+          jobApplicationStub
+        )
+
+        await service.sendMessageFromUser(userStub, {
+          jobId: 1,
+          message: 'message'
+        })
+
+        expect(messageRepositoryMock.persistAndFlush).toHaveBeenCalled()
+      })
+    })
+
+    describe('sendMessageFromCompany', () => {
+      it('should store message from company', async () => {
+        applicationRepositoryMock.findOne.mockResolvedValueOnce(
+          jobApplicationStub
+        )
+
+        await service.sendMessageFromCompany(companyStub, {
+          jobId: 1,
+          message: 'message'
+        })
+
+        expect(messageRepositoryMock.persistAndFlush).toHaveBeenCalled()
       })
     })
   })

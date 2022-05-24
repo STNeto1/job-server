@@ -5,6 +5,8 @@ import { Company } from '../company/entities/company.entity'
 import { JobService } from '../job/job.service'
 import { User } from '../user/entities/user.entity'
 import { CreateJobApplicationInput } from './dto/create-job-application.input'
+import { SendMessageInput } from './dto/send-message.input'
+import { JobApplicationMessage } from './entities/job-application-message.entity'
 import { JobApplication } from './entities/job-application.entity'
 import { ApplicationStatus } from './gql/enum'
 
@@ -13,6 +15,8 @@ export class JobApplicationService {
   constructor(
     @InjectRepository(JobApplication)
     private applicationRepository: EntityRepository<JobApplication>,
+    @InjectRepository(JobApplicationMessage)
+    private messageRepository: EntityRepository<JobApplicationMessage>,
     private jobService: JobService
   ) {}
 
@@ -150,5 +154,32 @@ export class JobApplicationService {
     // TODO send email to user
 
     await this.applicationRepository.persistAndFlush(application)
+  }
+
+  async sendMessageFromUser(user: User, data: SendMessageInput): Promise<void> {
+    const application = await this.findUserApplication(user, data.jobId)
+
+    const message = this.messageRepository.create({
+      application,
+      message: data.message,
+      from_user: true
+    })
+
+    await this.messageRepository.persistAndFlush(message)
+  }
+
+  async sendMessageFromCompany(
+    company: Company,
+    data: SendMessageInput
+  ): Promise<void> {
+    const application = await this.findCompanyApplication(company, data.jobId)
+
+    const message = this.messageRepository.create({
+      application,
+      message: data.message,
+      from_user: false
+    })
+
+    await this.messageRepository.persistAndFlush(message)
   }
 }
