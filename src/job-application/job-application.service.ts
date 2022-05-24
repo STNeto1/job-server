@@ -5,7 +5,6 @@ import { Company } from '../company/entities/company.entity'
 import { JobService } from '../job/job.service'
 import { User } from '../user/entities/user.entity'
 import { CreateJobApplicationInput } from './dto/create-job-application.input'
-import { UpdateJobApplicationInput } from './dto/update-job-application.input'
 import { JobApplication } from './entities/job-application.entity'
 import { ApplicationStatus } from './gql/enum'
 
@@ -151,13 +150,5 @@ export class JobApplicationService {
     // TODO send email to user
 
     await this.applicationRepository.persistAndFlush(application)
-  }
-
-  update(id: number, updateJobApplicationInput: UpdateJobApplicationInput) {
-    return `This action updates a #${id} jobApplication`
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} jobApplication`
   }
 }
