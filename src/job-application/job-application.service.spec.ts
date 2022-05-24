@@ -45,7 +45,9 @@ describe('JobApplicationService', () => {
 
   describe('create', () => {
     it('throw BadRequestException if application already exists', async () => {
-      applicationRepositoryMock.findOne.mockResolvedValue(jobApplicationStub)
+      applicationRepositoryMock.findOne.mockResolvedValue({
+        ...jobApplicationStub
+      })
 
       await expect(service.create(userStub, { jobId: 1 })).rejects.toThrow(
         BadRequestException
@@ -63,7 +65,9 @@ describe('JobApplicationService', () => {
 
   describe('findAll', () => {
     it('should find all job applications', async () => {
-      applicationRepositoryMock.find.mockResolvedValue([jobApplicationStub])
+      applicationRepositoryMock.find.mockResolvedValue([
+        { ...jobApplicationStub }
+      ])
 
       const result = await service.findAll()
 
@@ -73,7 +77,9 @@ describe('JobApplicationService', () => {
 
   describe('findAllUserApplications', () => {
     it('should find all user job applications', async () => {
-      applicationRepositoryMock.find.mockResolvedValue([jobApplicationStub])
+      applicationRepositoryMock.find.mockResolvedValue([
+        { ...jobApplicationStub }
+      ])
 
       const result = await service.findAllUserApplications(userStub)
 
@@ -83,7 +89,9 @@ describe('JobApplicationService', () => {
 
   describe('findAllCompanyApplications', () => {
     it('should find all company related job applications', async () => {
-      applicationRepositoryMock.find.mockResolvedValue([jobApplicationStub])
+      applicationRepositoryMock.find.mockResolvedValue([
+        { ...jobApplicationStub }
+      ])
 
       const result = await service.findAllCompanyApplications(companyStub)
 
@@ -101,7 +109,9 @@ describe('JobApplicationService', () => {
     })
 
     it('should return the user application', async () => {
-      applicationRepositoryMock.findOne.mockResolvedValue(jobApplicationStub)
+      applicationRepositoryMock.findOne.mockResolvedValue({
+        ...jobApplicationStub
+      })
 
       const result = await service.findUserApplication(userStub, 1)
 
@@ -119,7 +129,9 @@ describe('JobApplicationService', () => {
     })
 
     it('should return the company related application', async () => {
-      applicationRepositoryMock.findOne.mockResolvedValue(jobApplicationStub)
+      applicationRepositoryMock.findOne.mockResolvedValue({
+        ...jobApplicationStub
+      })
 
       const result = await service.findCompanyApplication(companyStub, 1)
 
@@ -135,9 +147,9 @@ describe('JobApplicationService', () => {
       }
 
       it('should throw BadRequestException if application is not open', async () => {
-        applicationRepositoryMock.findOne.mockResolvedValue(
-          processingApplicationStub
-        )
+        applicationRepositoryMock.findOne.mockResolvedValueOnce({
+          ...processingApplicationStub
+        })
 
         await expect(
           service.markApplicationAsProcessing(companyStub, 1)
@@ -145,13 +157,17 @@ describe('JobApplicationService', () => {
       })
 
       it('should mark application as processing', async () => {
-        applicationRepositoryMock.findOne.mockResolvedValue(jobApplicationStub)
+        applicationRepositoryMock.findOne.mockResolvedValueOnce({
+          ...jobApplicationStub,
+          status: ApplicationStatus.OPEN
+        })
 
         await service.markApplicationAsProcessing(companyStub, 1)
 
-        expect(applicationRepositoryMock.persistAndFlush).toHaveBeenCalledWith(
-          processingApplicationStub
-        )
+        expect(applicationRepositoryMock.persistAndFlush).toHaveBeenCalledWith({
+          ...jobApplicationStub,
+          status: ApplicationStatus.OPEN
+        })
       })
     })
 
@@ -162,7 +178,9 @@ describe('JobApplicationService', () => {
       }
 
       it('should throw BadRequestException if application is not processing', async () => {
-        applicationRepositoryMock.findOne.mockResolvedValue(openApplicationStub)
+        applicationRepositoryMock.findOne.mockResolvedValueOnce(
+          openApplicationStub
+        )
 
         await expect(
           service.markApplicationAsFinished(companyStub, 1)
@@ -170,13 +188,17 @@ describe('JobApplicationService', () => {
       })
 
       it('should mark application as finished', async () => {
-        applicationRepositoryMock.findOne.mockResolvedValue(jobApplicationStub)
+        applicationRepositoryMock.findOne.mockResolvedValueOnce({
+          ...jobApplicationStub,
+          status: ApplicationStatus.PROCESSING
+        })
 
         await service.markApplicationAsFinished(companyStub, 1)
 
-        expect(applicationRepositoryMock.persistAndFlush).toHaveBeenCalledWith(
-          openApplicationStub
-        )
+        expect(applicationRepositoryMock.persistAndFlush).toHaveBeenCalledWith({
+          ...jobApplicationStub,
+          status: ApplicationStatus.PROCESSING
+        })
       })
     })
 
@@ -187,9 +209,9 @@ describe('JobApplicationService', () => {
       }
 
       it('should throw BadRequestException if application is not cancelled', async () => {
-        applicationRepositoryMock.findOne.mockResolvedValue(
-          processingJobApplication
-        )
+        applicationRepositoryMock.findOne.mockResolvedValueOnce({
+          ...processingJobApplication
+        })
 
         await expect(service.cancelJobApplication(userStub, 1)).rejects.toThrow(
           BadRequestException
@@ -197,9 +219,40 @@ describe('JobApplicationService', () => {
       })
 
       it('should cancel application', async () => {
-        applicationRepositoryMock.findOne.mockResolvedValue(jobApplicationStub)
+        applicationRepositoryMock.findOne.mockResolvedValueOnce({
+          ...jobApplicationStub
+        })
 
         await service.cancelJobApplication(userStub, 1)
+
+        expect(applicationRepositoryMock.persistAndFlush).toHaveBeenCalledWith(
+          jobApplicationStub
+        )
+      })
+    })
+
+    describe('giveUpJobApplication', () => {
+      const invalidStatusJobApplication: JobApplication = {
+        ...jobApplicationStub,
+        status: ApplicationStatus.GIVEN_UP
+      }
+
+      it('should throw BadRequestException if application is not processing or open', async () => {
+        applicationRepositoryMock.findOne.mockResolvedValueOnce({
+          ...invalidStatusJobApplication
+        })
+
+        await expect(
+          service.giveUpJobApplication(companyStub, 1)
+        ).rejects.toThrow(BadRequestException)
+      })
+
+      it('should given up on application', async () => {
+        applicationRepositoryMock.findOne.mockResolvedValueOnce({
+          ...jobApplicationStub
+        })
+
+        await service.giveUpJobApplication(companyStub, 1)
 
         expect(applicationRepositoryMock.persistAndFlush).toHaveBeenCalledWith(
           jobApplicationStub

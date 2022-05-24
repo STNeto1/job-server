@@ -135,6 +135,24 @@ export class JobApplicationService {
     await this.applicationRepository.persistAndFlush(application)
   }
 
+  async giveUpJobApplication(company: Company, id: number): Promise<void> {
+    const application = await this.findCompanyApplication(company, id)
+
+    if (
+      application.status !== ApplicationStatus.PROCESSING &&
+      application.status !== ApplicationStatus.OPEN
+    ) {
+      throw new BadRequestException(
+        'Only open or processing applications can be given up'
+      )
+    }
+
+    application.status = ApplicationStatus.GIVEN_UP
+    // TODO send email to user
+
+    await this.applicationRepository.persistAndFlush(application)
+  }
+
   update(id: number, updateJobApplicationInput: UpdateJobApplicationInput) {
     return `This action updates a #${id} jobApplication`
   }
