@@ -2,43 +2,75 @@ import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
 import { JobApplicationService } from './job-application.service'
 import { JobApplication } from './entities/job-application.entity'
 import { CreateJobApplicationInput } from './dto/create-job-application.input'
-import { UpdateJobApplicationInput } from './dto/update-job-application.input'
+import { UseGuards } from '@nestjs/common'
+import { GqlAuthGuard } from '../auth/guard/gql.guard'
+import { CurrentUser } from '../auth/decorators/current-user'
+import { User } from '../user/entities/user.entity'
+import { CurrentCompany } from '../auth/decorators/current-company'
+import { Company } from '../company/entities/company.entity'
 
 @Resolver(() => JobApplication)
+@UseGuards(GqlAuthGuard)
 export class JobApplicationResolver {
   constructor(private readonly jobApplicationService: JobApplicationService) {}
 
-  @Mutation(() => JobApplication)
-  createJobApplication(
+  @Mutation(() => Boolean)
+  async createJobApplication(
+    @CurrentUser() user: User,
     @Args('createJobApplicationInput')
     createJobApplicationInput: CreateJobApplicationInput
-  ) {
-    return this.jobApplicationService.create(createJobApplicationInput)
+  ): Promise<boolean> {
+    await this.jobApplicationService.create(user, createJobApplicationInput)
+    return true
   }
 
-  @Query(() => [JobApplication], { name: 'jobApplication' })
-  findAll() {
-    return this.jobApplicationService.findAll()
+  @Query(() => [JobApplication], { name: 'findUserJobApplications' })
+  async findUserJobApplications(
+    @CurrentUser() user: User
+  ): Promise<JobApplication[]> {
+    return this.jobApplicationService.findAllUserApplications(user)
   }
 
-  @Query(() => JobApplication, { name: 'jobApplication' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.jobApplicationService.findOne(id)
+  @Query(() => [JobApplication], { name: 'findCompanyRelatedJobApplications' })
+  async findCompanyRelatedJobApplications(
+    @CurrentCompany() company: Company
+  ): Promise<JobApplication[]> {
+    return this.jobApplicationService.findAllCompanyApplications(company)
   }
 
-  @Mutation(() => JobApplication)
-  updateJobApplication(
-    @Args('updateJobApplicationInput')
-    updateJobApplicationInput: UpdateJobApplicationInput
-  ) {
-    return this.jobApplicationService.update(
-      updateJobApplicationInput.id,
-      updateJobApplicationInput
-    )
+  @Mutation(() => Boolean, { name: 'markApplicationAsProcessing' })
+  async markApplicationAsProcessing(
+    @CurrentCompany() company: Company,
+    @Args('id', { type: () => Int }) id: number
+  ): Promise<boolean> {
+    await this.jobApplicationService.markApplicationAsProcessing(company, id)
+    return true
   }
 
-  @Mutation(() => JobApplication)
-  removeJobApplication(@Args('id', { type: () => Int }) id: number) {
-    return this.jobApplicationService.remove(id)
+  @Mutation(() => Boolean, { name: 'markApplicationAsFinished' })
+  async markApplicationAsFinished(
+    @CurrentCompany() company: Company,
+    @Args('id', { type: () => Int }) id: number
+  ): Promise<boolean> {
+    await this.jobApplicationService.markApplicationAsFinished(company, id)
+    return true
+  }
+
+  @Mutation(() => Boolean, { name: 'cancelJobApplication' })
+  async cancelJobApplication(
+    @CurrentUser() user: User,
+    @Args('id', { type: () => Int }) id: number
+  ): Promise<boolean> {
+    await this.jobApplicationService.cancelJobApplication(user, id)
+    return true
+  }
+
+  @Mutation(() => Boolean, { name: 'giveUpJobApplication' })
+  async giveUpJobApplication(
+    @CurrentCompany() company: Company,
+    @Args('id', { type: () => Int }) id: number
+  ): Promise<boolean> {
+    await this.jobApplicationService.giveUpJobApplication(company, id)
+    return true
   }
 }
