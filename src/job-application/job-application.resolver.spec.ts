@@ -92,4 +92,26 @@ describe('JobApplicationResolver', () => {
       expect(applicationServiceMock.giveUpJobApplication).toHaveBeenCalled()
     })
   })
+
+  describe('sendMessageFromUser', () => {
+    it('should store message from user', async () => {
+      await resolver.sendMessageFromUser(userStub, {
+        jobId: 1,
+        message: 'any message'
+      })
+
+      expect(applicationServiceMock.sendMessageFromUser).toHaveBeenCalled()
+    })
+  })
+
+  describe('sendMessageFromCompany', () => {
+    it('should store message from user', async () => {
+      await resolver.sendMessageFromCompany(companyStub, {
+        jobId: 1,
+        message: 'any message'
+      })
+
+      expect(applicationServiceMock.sendMessageFromCompany).toHaveBeenCalled()
+    })
+  })
 })

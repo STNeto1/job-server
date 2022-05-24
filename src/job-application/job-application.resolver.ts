@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { JobApplicationService } from './job-application.service'
 import { JobApplication } from './entities/job-application.entity'
 import { CreateJobApplicationInput } from './dto/create-job-application.input'
@@ -8,6 +8,7 @@ import { CurrentUser } from '../auth/decorators/current-user'
 import { User } from '../user/entities/user.entity'
 import { CurrentCompany } from '../auth/decorators/current-company'
 import { Company } from '../company/entities/company.entity'
+import { SendMessageInput } from './dto/send-message.input'
 
 @Resolver(() => JobApplication)
 @UseGuards(GqlAuthGuard)
@@ -71,6 +72,24 @@ export class JobApplicationResolver {
     @Args('id', { type: () => Int }) id: number
   ): Promise<boolean> {
     await this.jobApplicationService.giveUpJobApplication(company, id)
+    return true
+  }
+
+  @Mutation(() => Boolean, { name: 'sendMessageFromUser' })
+  async sendMessageFromUser(
+    @CurrentUser() user: User,
+    @Args('data', { type: () => SendMessageInput }) data: SendMessageInput
+  ): Promise<boolean> {
+    await this.jobApplicationService.sendMessageFromUser(user, data)
+    return true
+  }
+
+  @Mutation(() => Boolean, { name: 'sendMessageFromCompany' })
+  async sendMessageFromCompany(
+    @CurrentCompany() company: Company,
+    @Args('data', { type: () => SendMessageInput }) data: SendMessageInput
+  ): Promise<boolean> {
+    await this.jobApplicationService.sendMessageFromCompany(company, data)
     return true
   }
 }
